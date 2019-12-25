@@ -1,8 +1,8 @@
 {
-  "name": "client",
+  "name": "operative-client",
   "version": "1.0.0",
-  "main": "index.js",
-  "author": "Josh Justice <josh.justice@accesscfa.com>",
+  "main": "src/index.js",
+  "author": "Josh Justice <me@codingitwrong.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^10.0.3",

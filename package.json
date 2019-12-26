@@ -19,5 +19,8 @@
     "jest": "^24.9.0",
     "prettier": "^1.19.1"
   },
-  "peerDependencies": {}
+  "peerDependencies": {},
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
 }

@@ -232,6 +232,10 @@ class Operative {
   #setUpWebSocket = () => {
     const socket = this.#webSocket;
 
+    if (!socket) {
+      return;
+    }
+
     socket.onopen = () => {
       console.log('Web socket connected');
     };

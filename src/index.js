@@ -9,6 +9,15 @@ export const handleOutOfOrderSloppy = ({
   newOps = [],
 }) => [...remoteOps, ...newOps];
 
+const getHeaders = {
+  Accept: 'application/json',
+};
+
+const postHeaders = {
+  ...getHeaders,
+  'Content-Type': 'application/json',
+};
+
 class Operative {
   #httpClient;
   #webSocket;
@@ -46,11 +55,13 @@ class Operative {
   }
 
   loadAll() {
-    return this.#httpClient.get('/').then(({ data }) => {
-      this.#records = data;
-      this.#trackLastSync();
-      this.#persist();
-    });
+    return this.#httpClient
+      .get('/', { headers: getHeaders })
+      .then(({ data }) => {
+        this.#records = data;
+        this.#trackLastSync();
+        this.#persist();
+      });
   }
 
   get records() {
@@ -156,7 +167,7 @@ class Operative {
 
   #getOperations = () => {
     return this.#httpClient
-      .get(this.#operationsUrl())
+      .get(this.#operationsUrl(), { headers: getHeaders })
       .then(({ data: operations }) => operations);
   };
 
@@ -171,9 +182,7 @@ class Operative {
     } else {
       console.log('sending via http');
       return this.#httpClient
-        .post(this.#operationsUrl(), operations, {
-          headers: { 'Content-Type': 'application/json' },
-        })
+        .post(this.#operationsUrl(), operations, { headers: postHeaders })
         .then(({ data: operations }) => operations);
     }
   };

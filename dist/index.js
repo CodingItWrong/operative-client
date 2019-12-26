@@ -9,12 +9,6 @@ var _v = _interopRequireDefault(require("uuid/v4"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -24,6 +18,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to set private field on non-instance"); } if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } return value; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -44,6 +44,13 @@ var handleOutOfOrderSloppy = function handleOutOfOrderSloppy(_ref) {
 };
 
 exports.handleOutOfOrderSloppy = handleOutOfOrderSloppy;
+var getHeaders = {
+  Accept: 'application/json'
+};
+
+var postHeaders = _objectSpread({}, getHeaders, {
+  'Content-Type': 'application/json'
+});
 
 var Operative =
 /*#__PURE__*/
@@ -168,7 +175,9 @@ function () {
     _getOperations.set(this, {
       writable: true,
       value: function value() {
-        return _classPrivateFieldGet(_this, _httpClient).get(_classPrivateFieldGet(_this, _operationsUrl).call(_this)).then(function (_ref4) {
+        return _classPrivateFieldGet(_this, _httpClient).get(_classPrivateFieldGet(_this, _operationsUrl).call(_this), {
+          headers: getHeaders
+        }).then(function (_ref4) {
           var operations = _ref4.data;
           return operations;
         });
@@ -192,9 +201,7 @@ function () {
         } else {
           console.log('sending via http');
           return _classPrivateFieldGet(_this, _httpClient).post(_classPrivateFieldGet(_this, _operationsUrl).call(_this), operations, {
-            headers: {
-              'Content-Type': 'application/json'
-            }
+            headers: postHeaders
           }).then(function (_ref5) {
             var operations = _ref5.data;
             return operations;
@@ -269,6 +276,10 @@ function () {
       value: function value() {
         var socket = _classPrivateFieldGet(_this, _webSocket);
 
+        if (!socket) {
+          return;
+        }
+
         socket.onopen = function () {
           console.log('Web socket connected');
         };
@@ -315,7 +326,9 @@ function () {
     value: function loadAll() {
       var _this2 = this;
 
-      return _classPrivateFieldGet(this, _httpClient).get('/').then(function (_ref7) {
+      return _classPrivateFieldGet(this, _httpClient).get('/', {
+        headers: getHeaders
+      }).then(function (_ref7) {
         var data = _ref7.data;
 
         _classPrivateFieldSet(_this2, _records, data);
